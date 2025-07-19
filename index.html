@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Healty</title>
+  <link href="output.css" rel="stylesheet"/>
+  <link rel="icon" type="image/svg+xml" href="Fav.svg">
+  <meta name="description" content="Healty is a user-friendly health query platform that provides reliable information on daily habits and drug interactions to help users make informed health decisions." /> 
+</head>
+<body class="relative text-gray-900">
+  <div class="relative flex-grow flex flex-col items-center justify-between p-4 md:p-6 z-10">
+    <header class="w-full max-w-7xl mx-auto flex justify-between items-center z-20">
+      <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+        </svg>
+        <span class="font-bold text-lg">Healty</span>
+      </div>
+      <div class="header-controls flex items-center">
+        <div id="theme-toggle" class="theme-toggle">
+          <span class="material-icons" id="theme-icon">dark_mode</span>
+        </div>
+      </div>
+    </header>
+
+<main class="flex flex-col items-center justify-center text-center w-full">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter mb-6 md:mb-8 px-4">
+        <span id="main-title">Ask Me About Your <br />
+          <span class="typed-text-container">
+            <span class="typed-static"></span>
+            <span class="typed-dynamic"></span>
+            <span class="typed-cursor"></span>
+          </span>
+        </span>
+        <span id="answer-title" class="hidden">Here's Your Answer About <br />
+          <span class="answer-typed-text-container">
+            <span class="answer-typed-static"></span>
+            <span class="answer-typed-dynamic"></span>
+            <span class="answer-typed-cursor"></span>
+          </span>
+        </span>
+      </h1>
+
+      <div class="w-full max-w-xl px-4">
+        <div id="search-container" class="glassmorphism p-2 flex items-center gap-2 shadow-lg">
+<div class="ai-icon flex items-center justify-center p-1.5 rounded-md text-black dark:text-white bg-transparent border border-transparent">
+  <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 0 24 24" width="20px" fill="currentColor">
+    <path d="M0 0h24v24H0z" fill="none"></path>
+    <path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"></path>
+  </svg>
+</div>
+
+
+
+         <input
+  id="search-input"
+  type="text"
+  placeholder="Ask about your daily habits or drug interactions..."
+  class="focus:outline-none focus:ring-0"
+/>
+
+          <button id="ask-button" class="rounded-xl px-4 py-2 text-sm font-semibold transition duration-300">
+            Ask Healty
+          </button>
+        </div>
+
+        <div id="answer-container" class="hidden glassmorphism p-6 mt-4 shadow-lg">
+          <div id="answer-content" class="text-left"></div>
+          <button id="back-button" class="mt-4 rounded-xl px-6 py-2.5 text-sm font-semibold transition duration-300 w-full">
+            Ask New Question
+          </button>
+        </div>
+      </div>
+    </main>
+
+     <footer class="text-center py-4 text-xs text-white">
+      © All Right Reserved, <a href="https://t.me/KadoIQ" class="underline">Healty</a> 2025
+    </footer>
+  </div>
+
+ <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const translations = {
+      en: {
+        placeholder: "Ask about your daily habits or drug interactions...",
+        askButton: "Ask Healty",
+        backButton: "Ask New Question",
+        mainTitle: "Ask Me About Your",
+        footer: "© All Right Reserved, Healty 2025",
+        searching: "Searching...",
+        sources: "Sources",
+        heresYourAnswer: "Here's your answer about"
+      }
+    };
+
+    const typedTexts = ['Daily Habits', 'Drug Interactions'];
+    const themeToggle = document.getElementById('theme-toggle');
+    const iconContainer = document.getElementById('theme-icon');
+    const body = document.body;
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    const lightIconSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><rect fill="none" height="24" width="24"/><path d="M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0 c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2 c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1 C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06 c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41 l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41 c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36 c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"/></svg>
+    `;
+
+    const darkIconSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><rect fill="none" height="24" width="24"/><path d="M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36c-0.98,1.37-2.58,2.26-4.4,2.26 c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"/></svg>
+    `;
+
+    function updateThemeIcon() {
+      if (body.classList.contains('dark')) {
+        iconContainer.innerHTML = lightIconSVG;
+      } else {
+        iconContainer.innerHTML = darkIconSVG;
+      }
+    }
+
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+      body.classList.add('dark');
+    } else {
+      body.classList.remove('dark');
+    }
+    updateThemeIcon();
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
+      updateThemeIcon();
+    });
+
+    const mainStaticEl = document.querySelector('.typed-static');
+    const mainDynamicEl = document.querySelector('.typed-dynamic');
+    const mainCursorEl = document.querySelector('.typed-cursor');
+    
+    const answerStaticEl = document.querySelector('.answer-typed-static');
+    const answerDynamicEl = document.querySelector('.answer-typed-dynamic');
+    const answerCursorEl = document.querySelector('.answer-typed-cursor');
+
+    let mainIndex = 0;
+    let answerIndex = 0;
+    let mainAnimationTimeout;
+    let answerAnimationTimeout;
+
+    function calculateTextWidth(text) {
+      const temp = document.createElement('span');
+      temp.style.visibility = 'hidden';
+      temp.style.position = 'absolute';
+      temp.style.fontFamily = 'Cur';
+      temp.style.fontSize = window.getComputedStyle(mainStaticEl).fontSize;
+      temp.style.whiteSpace = 'nowrap';
+      temp.style.paddingRight = '1px';
+      temp.textContent = text;
+      document.body.appendChild(temp);
+      const width = temp.getBoundingClientRect().width;
+      document.body.removeChild(temp);
+      return width;
+    }
+
+    function commonPrefix(a, b) {
+      let j = 0;
+      while (j < a.length && j < b.length && a[j] === b[j]) {
+        j++;
+      }
+      return a.slice(0, j);
+    }
+
+    function startTypingAnimation(staticEl, dynamicEl, index, isAnswer = false) {
+      const current = typedTexts[index % typedTexts.length];
+      const next = typedTexts[(index + 1) % typedTexts.length];
+      const shared = commonPrefix(current, next);
+      const dynamicOut = current.slice(shared.length);
+      const dynamicIn = next.slice(shared.length);
+
+      staticEl.textContent = shared;
+      staticEl.style.whiteSpace = 'nowrap';
+
+      dynamicEl.textContent = dynamicOut;
+      dynamicEl.style.setProperty('--text-width', `${calculateTextWidth(dynamicOut)}px`);
+      dynamicEl.style.animation = 'none';
+      void dynamicEl.offsetWidth;
+      dynamicEl.style.animation = 'deleting 1s forwards';
+
+      const timeout = setTimeout(() => {
+        dynamicEl.textContent = dynamicIn;
+        dynamicEl.style.setProperty('--text-width', `${calculateTextWidth(dynamicIn)}px`);
+        dynamicEl.style.animation = 'none';
+        void dynamicEl.offsetWidth;
+        dynamicEl.style.animation = 'typing 1.5s forwards';
+
+        const nextTimeout = setTimeout(() => {
+          if (isAnswer) {
+            answerIndex++;
+            startTypingAnimation(answerStaticEl, answerDynamicEl, answerIndex, true);
+          } else {
+            mainIndex++;
+            startTypingAnimation(mainStaticEl, mainDynamicEl, mainIndex);
+          }
+        }, 3000);
+
+        if (isAnswer) {
+          answerAnimationTimeout = nextTimeout;
+        } else {
+          mainAnimationTimeout = nextTimeout;
+        }
+      }, 1200);
+
+      if (isAnswer) {
+        answerAnimationTimeout = timeout;
+      } else {
+        mainAnimationTimeout = timeout;
+      }
+    }
+
+    function startMainTypingAnimation() {
+      clearTimeout(mainAnimationTimeout);
+      mainStaticEl.textContent = '';
+      mainDynamicEl.textContent = '';
+      mainDynamicEl.style.animation = 'none';
+      mainIndex = 0;
+      startTypingAnimation(mainStaticEl, mainDynamicEl, mainIndex);
+    }
+
+    function startAnswerTypingAnimation() {
+      clearTimeout(answerAnimationTimeout);
+      answerStaticEl.textContent = '';
+      answerDynamicEl.textContent = '';
+      answerDynamicEl.style.animation = 'none';
+      answerIndex = 0;
+      startTypingAnimation(answerStaticEl, answerDynamicEl, answerIndex, true);
+    }
+
+    function stopMainTypingAnimation() {
+      clearTimeout(mainAnimationTimeout);
+      mainDynamicEl.style.animation = 'none';
+    }
+
+    function stopAnswerTypingAnimation() {
+      clearTimeout(answerAnimationTimeout);
+      answerDynamicEl.style.animation = 'none';
+    }
+
+    startMainTypingAnimation();
+
+    const searchContainer = document.getElementById('search-container');
+    const answerContainer = document.getElementById('answer-container');
+    const askButton = document.getElementById('ask-button');
+    const backButton = document.getElementById('back-button');
+    const searchInput = document.getElementById('search-input');
+    const answerContent = document.getElementById('answer-content');
+    const mainTitle = document.getElementById('main-title');
+    const answerTitle = document.getElementById('answer-title');
+
+    function showLoading() {
+      const t = translations.en;
+      answerContent.innerHTML = `
+        <div class="flex flex-col items-center justify-center py-4">
+          <div class="spinner"></div>
+          <p class="searching-text mt-2">${t.searching}</p>
+        </div>
+      `;
+      startAnswerTypingAnimation();
+    }
+
+    function sendToServer(question) {
+      return fetch("https://anzlcs.pythonanywhere.com/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ 
+          query: question,
+          lang: 'en'
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Server response error');
+        }
+        return response.json();
+      });
+    }
+
+    function isArabic(text) {
+      return /[\u0600-\u06FF]/.test(text);
+    }
+
+    async function typeAnswerText(text, target) {
+      target.innerHTML = '';
+      for (let i = 0; i < text.length; i++) {
+        target.innerHTML += text[i];
+        await new Promise(resolve => setTimeout(resolve, 30));
+      }
+    }
+
+    async function showAnswer(question, response) {
+      const t = translations.en;
+      
+      const answer = response.answer || "No answer found.";
+      const sources = response.sources || [];
+      
+      const answerIsArabic = isArabic(answer);
+      const direction = answerIsArabic ? 'rtl' : 'ltr';
+      const textAlign = answerIsArabic ? 'right' : 'left';
+
+      let sourcesHTML = '';
+      if (sources.length > 0) {
+        sourcesHTML = `
+          <div class="sources-container">
+            <h3 class="sources-title">${t.sources}</h3>
+            ${sources.map(source => `
+              <a href="${source.url}" target="_blank" rel="noopener noreferrer" 
+                  class="source-icon" 
+                  title="${source.name || source.url}">
+                <img src="${source.favicon || 'https://www.google.com/s2/favicons?domain=' + source.url}" 
+                         alt="${source.name || ''}" />
+              </a>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      if (answer.includes('<span')) {
+        answerContent.innerHTML = `
+          <div class="answer-text" style="direction: ${direction}; text-align: ${textAlign};">
+            ${answer}
+          </div>
+          ${sourcesHTML}
+        `;
+      } else {
+        answerContent.innerHTML = `
+          <div class="answer-text" style="direction: ${direction}; text-align: ${textAlign};">
+            <p></p>
+          </div>
+          ${sourcesHTML}
+        `;
+
+        const answerTextElement = answerContent.querySelector('.answer-text p');
+        await typeAnswerText(answer, answerTextElement);
+      }
+    }
+
+    function handleError(error) {
+      answerContent.innerHTML = `
+        <div class="text-red-500 dark:text-red-400">
+          <p>An error occurred: ${error.message || 'Please try again later.'}</p>
+        </div>
+      `;
+    }
+
+    askButton.addEventListener('click', async () => {
+      const question = searchInput.value.trim();
+
+      if (question) {
+        answerTitle.classList.remove('hidden');
+        mainTitle.classList.add('hidden');
+        searchContainer.classList.add('hidden');
+        answerContainer.classList.remove('hidden');
+        
+        showLoading();
+
+        try {
+          const response = await sendToServer(question);
+          await showAnswer(question, response);
+        } catch (error) {
+          handleError(error);
+        }
+      } else {
+        searchInput.focus();
+        searchInput.classList.add('animate-pulse');
+        setTimeout(() => {
+          searchInput.classList.remove('animate-pulse');
+        }, 1000);
+      }
+    });
+
+    backButton.addEventListener('click', () => {
+      answerContainer.classList.add('hidden');
+      searchContainer.classList.remove('hidden');
+      searchInput.value = '';
+      searchInput.focus();
+      mainTitle.classList.remove('hidden');
+      answerTitle.classList.add('hidden');
+
+      stopAnswerTypingAnimation();
+      startMainTypingAnimation();
+    });
+
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        askButton.click();
+      }
+    });
+  });
+</script>
+
+
+</body>
+</html>
